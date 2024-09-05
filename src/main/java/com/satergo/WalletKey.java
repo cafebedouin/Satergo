@@ -5,11 +5,12 @@ import com.satergo.extra.hw.ledger.ErgoLedgerAppkit;
 import com.satergo.ergo.ErgoInterface;
 import com.satergo.extra.AESEncryption;
 import com.satergo.extra.dialog.MoveStyle;
-import com.satergo.extra.hw.ledger.HidLedgerDevice3;
 import com.satergo.extra.hw.ledger.LedgerPrompt;
 import com.satergo.extra.hw.ledger.LedgerSelector;
 import com.satergo.jledger.protocol.ergo.ErgoNetworkType;
 import com.satergo.jledger.protocol.ergo.ErgoProtocol;
+import com.satergo.jledger.transport.hid4java.HidLedgerDevice;
+import com.satergo.jledger.transport.hid4java.InvalidChannelException;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import org.ergoplatform.ErgoAddressEncoder;
@@ -329,7 +330,7 @@ public abstract class WalletKey {
 					public void deviceFound(HidDevice hidDevice) {
 						System.out.println("DEVICE FOUND");
 						Platform.runLater(() -> {
-							connectionPrompt.setResult(new ErgoLedgerAppkit(new ErgoProtocol(new HidLedgerDevice3(hidDevice))));
+							connectionPrompt.setResult(new ErgoLedgerAppkit(new ErgoProtocol(new HidLedgerDevice(hidDevice))));
 							connectionPrompt.close();
 						});
 						stop();
@@ -402,7 +403,7 @@ public abstract class WalletKey {
 
 				ErgoLikeTransaction signed = ((UnsignedTransactionImpl) unsignedTx).getTx().toSigned(JavaConverters.asScalaBuffer(List.of(new ProverResult(bytes, ContextExtension.empty()))).toIndexedSeq());
 				return new SignedTransactionImpl((BlockchainContextBase) ctx, signed, 0);
-			} catch (HidLedgerDevice3.InvalidChannelException e) {
+			} catch (InvalidChannelException e) {
 				if (e.received == 0) {
 					Utils.alert(Alert.AlertType.ERROR, Main.lang("ledger.deviceIsLocked"));
 					throw new Failure();
