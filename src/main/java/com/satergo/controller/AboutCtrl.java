@@ -93,7 +93,7 @@ public class AboutCtrl implements Initializable, WalletTab {
 					DONATION_ADDRESS, ErgoInterface.toNanoErg(amountFullErg), Parameters.MinFee, Main.get().getWallet().publicAddress(0));
 			String txId = wallet.transact(Utils.createErgoClient().execute(ctx -> {
 				try {
-					return wallet.key().sign(ctx, unsignedTx, wallet.myAddresses.keySet());
+					return wallet.key().sign(ctx, unsignedTx, wallet.myAddresses.keySet(), 0);
 				} catch (WalletKey.Failure ex) {
 					return null;
 				}
